@@ -89,7 +89,7 @@ func stripPrefix(prefix string, path string) string {
 // users.
 var errSeeker = errors.New("seeker can't seek")
 
-// if name is empty, filename is unknown. (used for mime type, before sniffing)
+// serveContent; if name is empty, filename is unknown. (used for mime type, before sniffing)
 // if modtime.IsZero(), modtime is unknown.
 // content must be seeked to the beginning of the file.
 // The sizeFunc is called at most once. Its error, if any, is sent in the HTTP response.
@@ -158,7 +158,7 @@ func serveContent(ci inject.CopyInject, w http.ResponseWriter, r *http.Request, 
 	return nil
 }
 
-// modtime is the modification time of the resource to be served, or IsZero().
+// checkLastModified; modtime is the modification time of the resource to be served, or IsZero().
 // return value is whether this request is now complete.
 func checkLastModified(w http.ResponseWriter, r *http.Request, modtime time.Time) bool {
 	if modtime.IsZero() {
@@ -257,7 +257,7 @@ func (fserver *FileServer) ServeHTTPContext(
 	fserver.serveFile(logger, w, r, path.Clean(upath), true)
 }
 
-// Given a path and a "not found" over-ride specification, return an array of
+// notFoundSearchPaths; Given a path and a "not found" over-ride specification, return an array of
 // over-ride paths that should be considered for serving, in priority order. We
 // assume that path is a sub-path above a certain root, and we never return
 // paths that would fall outside this.
@@ -282,7 +282,7 @@ func notFoundSearchPaths(pth string, spec string) []string {
 	return ret
 }
 
-// Get the media type for an extension, via a MIME lookup, defaulting to
+// _getType gets the media type for an extension, via a MIME lookup, defaulting to
 // "text/html".
 func _getType(ext string) string {
 	typ := mime.TypeByExtension(ext)
@@ -296,7 +296,7 @@ func _getType(ext string) string {
 	return smime
 }
 
-// Checks whether the incoming request has the same expected type as an
+// matchTypes checks whether the incoming request has the same expected type as an
 // over-ride specification.
 func matchTypes(spec string, req string) bool {
 	smime := _getType(path.Ext(spec))
@@ -410,7 +410,7 @@ func (fserver *FileServer) notFound(
 	return err
 }
 
-// If the next return value is true, the caller should proceed to the next
+// serveNotFoundFile; If the next return value is true, the caller should proceed to the next
 // over-ride path if there is one. If the err return value is non-nil, serving
 // should stop.
 func (fserver *FileServer) serveNotFoundFile(
@@ -438,7 +438,7 @@ func (fserver *FileServer) serveNotFoundFile(
 	return false, nil
 }
 
-// name is '/'-separated, not filepath.Separator.
+// serveFile; name is '/'-separated, not filepath.Separator.
 func (fserver *FileServer) serveFile(
 	logger termlog.Logger,
 	w http.ResponseWriter,

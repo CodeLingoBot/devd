@@ -92,7 +92,7 @@ type Route struct {
 	Endpoint endpoint
 }
 
-// Constructs a new route from a string specifcation. Specifcations are of the
+// newRoute constructs a new route from a string specifcation. Specifcations are of the
 // form ANCHOR=VALUE.
 func newRoute(s string, notfound []string) (*Route, error) {
 	rp, err := routespec.ParseRouteSpec(s)

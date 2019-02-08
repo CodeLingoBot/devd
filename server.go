@@ -65,7 +65,7 @@ func getTLSConfig(path string) (t *tls.Config, err error) {
 	return config, nil
 }
 
-// This filthy hack works in conjunction with hostPortStrip to restore the
+// revertOriginalHost; filthy hack works in conjunction with hostPortStrip to restore the
 // original request host after mux match.
 func revertOriginalHost(r *http.Request) {
 	original := r.Header.Get("_devd_original_host")
@@ -75,7 +75,7 @@ func revertOriginalHost(r *http.Request) {
 	}
 }
 
-// We can remove the mangling once this is fixed:
+// hostPortStrip; We can remove the mangling once this is fixed:
 // 		https://github.com/golang/go/issues/10463
 func hostPortStrip(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
